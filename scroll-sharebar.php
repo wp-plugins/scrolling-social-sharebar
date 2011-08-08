@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://letusbuzz.com
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.0
+Version: 1.0.1
 Author: Sudipto Pratap Mahato
 Author URI: http://letusbuzz.com
 */
@@ -26,6 +26,7 @@ function ssharebar_css() {
 if(!is_single()&&!is_page())return;
 $leftpad=get_option('ssbar_leftpadding','-80px');
 $toppad=get_option('ssbar_toppadding','20');
+wp_print_scripts( 'jquery' );
 ?>
 <style type="text/css">
    #scrollbarbox
@@ -47,9 +48,7 @@ $toppad=get_option('ssbar_toppadding','20');
     	padding:0px !important;
     	margin:0px !important;
     }
-    
 </style>
-<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js'></script>
 <script type="text/javascript">
 (function($) {
 	$(function() {
