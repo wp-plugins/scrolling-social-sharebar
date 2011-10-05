@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://letusbuzz.com
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.0.2
+Version: 1.0.3
 Author: Sudipto Pratap Mahato
 Author URI: http://letusbuzz.com
 */
@@ -26,6 +26,7 @@ function ssharebar_css() {
 if(!is_single()&&!is_page())return;
 $leftpad=get_option('ssbar_leftpadding','-80px');
 $toppad=get_option('ssbar_toppadding','20');
+$bottompad=get_option('ssbar_bottompadding','0');
 wp_print_scripts( 'jquery' );
 ?>
 <style type="text/css">
@@ -59,15 +60,18 @@ wp_print_scripts( 'jquery' );
 (function($) {
 	$(function() {
             var offset = $("#scrollbarbox").offset();
+            var bottomPadding = <?php echo $bottompad; ?>;
             var topPadding = <?php echo $toppad; ?>;
             $(window).scroll(function() 
             {
-                if ($(window).scrollTop() > offset.top) 
-                {
-		    var ss= $(window).scrollTop() - offset.top + topPadding;
-                    $("#scrollbarbox").stop().animate({marginTop:ss});
-                } 
-                else {$("#scrollbarbox").stop().animate({marginTop: 0}); };
+            	if($(window).scrollTop()<$(document).height()-bottomPadding-$("#scrollbarbox").height()){
+            		if ($(window).scrollTop() > offset.top) 
+                	{
+			    var ss= $(window).scrollTop() - offset.top + topPadding;
+        	            $("#scrollbarbox").stop().animate({marginTop:ss});
+                	} 
+                	else {$("#scrollbarbox").stop().animate({marginTop: 0}); }
+                };
             });
         });
 })(jQuery);
@@ -77,10 +81,10 @@ wp_print_scripts( 'jquery' );
 (function($) {
 	$(function() {
             var offset = $("#scrollbarbox").offset();
-            var topPadding = <?php echo $toppad; ?>;
+            var bottomPadding = <?php echo $bottompad; ?>;
             $(window).scroll(function() {
 		
-                if ($(window).scrollTop() > offset.top) 
+                if ($(window).scrollTop() > offset.top && $(window).scrollTop()<$(document).height()-bottomPadding-$("#scrollbarbox").height()) 
                 {
 		    $("#scrollbarbox").addClass("sbpinned");
                 } else {
@@ -157,6 +161,7 @@ function ssharebar_option()
 <h3 style="color: #cc0000;">Margins (Positioning the Bar)</h3>
 	<p><b>Left Margin : </b><input style="width: 60px;" type="text" name="ssbar_leftpadding" value="<?php echo get_option('ssbar_leftpadding','-80px'); ?>" /> <b>Include px</b> at the end of the value<br />(Negative value will shift Icon Bar towards Left and Positive value will move it towards Right)</p>
 	<p><b>Top Margin : </b><input style="width: 60px;" type="text" name="ssbar_toppadding" value="<?php echo get_option('ssbar_toppadding','20'); ?>" /> <b>Do not Include px</b> at the end of the value<br />(Increasing the value will move the bar Down)</p>
+	<p><b>Bottom Margin : </b><input style="width: 60px;" type="text" name="ssbar_bottompadding" value="<?php echo get_option('ssbar_bottompadding','0'); ?>" /> <b>Do not Include px</b> at the end of the value<br />(The margin from bottom of the page where the bar will stop scrolling)</p>
 
 <h3 style="color: #cc0000;">Choose Animation</h3>
 <input type="radio" name="ssbar_atype" value="scroll" <?php if (get_option( 'ssbar_atype', 'scroll' ) == "scroll" ) echo ' checked'; ?>></input><label for="ssbar_atype">Animated&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -171,7 +176,7 @@ function ssharebar_option()
 	
 	
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_atype" />
+	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_atype,ssbar_bottompadding" />
 	<p class="submit">
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
