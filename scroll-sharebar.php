@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Plugin URI: http://letusbuzz.com
+Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.0.4
+Version: 1.5
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -131,6 +131,7 @@ if(get_option('ssbar_addog', true )==true)ssharebar_fb_thumb();
 
 function ssharebar_fb_thumb()
 {
+global $post;
 $thumb = false;
 if(function_exists('get_post_thumbnail_id')&&function_exists('wp_get_attachment_image_src'))
 {
@@ -138,7 +139,7 @@ if(function_exists('get_post_thumbnail_id')&&function_exists('wp_get_attachment_
 	$image_url = wp_get_attachment_image_src($image_id,'large');
 	$thumb = $image_url[0]; 
 }
-$default_img = get_option('s4defthumb',''); 
+$default_img = get_option('ssbar_defthumb',''); 
 if ( $thumb == false ) 
 	$thumb=$default_img; 
 
@@ -147,6 +148,7 @@ if(is_single()) {
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content="<?php single_post_title(''); ?>" />
 	<meta property="og:url" content="<?php the_permalink(); ?>"/>
+	<meta property="og:description" content="<?php echo strip_tags(get_the_excerpt($post->ID)); ?>" />  
 	<?php if(trim($thumb)!=''){ ?>
 		<meta property="og:image" content="<?php echo $thumb; ?>" />
 	<?php } ?>
@@ -166,7 +168,7 @@ function ssharebar_option()
 ?>
 	<h2>Scrolling Social Sharebar Plugin Options</h2>
 	<p>Like this Plugin then why not hit the like button. Your like will motivate me to enhance the features of the Plugin :)<br />
-	<iframe style="overflow: hidden; width: 450px; height: 35px;" src="http://www.facebook.com/plugins/like.php?app_id=199883273397074&amp;href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FTech-XT%2F223482634358279&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=35" frameborder="0" scrolling="no" width="320" height="35"></iframe><br />And if you are too generous then you can always <b>DONATE</b> by clicking the donation button.<br/>A Donation will help in the uninterrupted developement of the plugin.<br /><a href="http://letusbuzz.com/scrolling-social-sharebar-plugin/" TARGET='_blank'>Click here</a> for <b>Reference on using the plugin</b> or if you want to <b>report a bug</b> or if you want to <b>suggest a Feature</b><br /></p>
+	<iframe style="overflow: hidden; width: 450px; height: 35px;" src="http://www.facebook.com/plugins/like.php?app_id=199883273397074&amp;href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FTech-XT%2F223482634358279&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=35" frameborder="0" scrolling="no" width="320" height="35"></iframe><br />And if you are too generous then you can always <b>DONATE</b> by clicking the donation button.<br/>A Donation will help in the uninterrupted developement of the plugin.<br /><a href="http://techxt.com/scrolling-social-sharebar-plugin/" TARGET='_blank'>Click here</a> for <b>Reference on using the plugin</b> or if you want to <b>report a bug</b> or if you want to <b>suggest a Feature</b><br /></p>
 <table class="form-ta">	
 <tr valign="top">
 <td width="78%">
@@ -185,7 +187,7 @@ function ssharebar_option()
 <p><input type="checkbox" name="ssbar_stumble" id="ssbar_stumble" value="true"<?php if (get_option( 'ssbar_stumble', false ) == true) echo ' checked'; ?>> Display Stumbleupon </p>
 <p><input type="checkbox" name="ssbar_fbshare" id="ssbar_fbshare" value="true"<?php if (get_option( 'ssbar_fbshare', false ) == true) echo ' checked'; ?>> Display Facebook Share </p>
 <p><input type="checkbox" name="ssbar_addthis" id="ssbar_addthis" value="true"<?php if (get_option( 'ssbar_addthis', true ) == true) echo ' checked'; ?>> Display Addthis Button </p>
-
+<p><b>Default Thumbnail URL</b> <input type="text" name="ssbar_defthumb" style="width: 300px;" value="<?php echo get_option('ssbar_defthumb',''); ?>" /></p>
 <h3 style="color: #cc0000;">Margins (Positioning the Bar)</h3>
 	<p><b>Left Margin : </b><input style="width: 60px;" type="text" name="ssbar_leftpadding" value="<?php echo get_option('ssbar_leftpadding','-80px'); ?>" /> <b>Include px</b> at the end of the value<br />(Negative value will shift Icon Bar towards Left and Positive value will move it towards Right)</p>
 	<p><b>Top Margin : </b><input style="width: 60px;" type="text" name="ssbar_toppadding" value="<?php echo get_option('ssbar_toppadding','20'); ?>" /> <b>Do not Include px</b> at the end of the value<br />(Increasing the value will move the bar Down)</p>
@@ -217,12 +219,12 @@ function ssharebar_option()
 
 	
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit" />
+	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit" />
 	<p class="submit">
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
 	</form>
-</td><td width="2%">&nbsp;</td><td width="20%"><b>Follow us on</b><br/><a href="http://twitter.com/letusbuzz" target="_blank"><img src="http://a0.twimg.com/a/1303316982/images/twitter_logo_header.png" /></a><br/><a href="http://facebook.com/letusbuzzz" target="_blank"><img src="https://secure-media-sf2p.facebook.com/ads3/creative/pressroom/jpg/b_1234209334_facebook_logo.jpg" height="38px" width="118px"/></a><p></p><b>Feeds and News</b><br /><?php ssharebar_get_feed() ?>
+</td><td width="2%">&nbsp;</td><td width="20%"><b>Follow us on</b><br/><a href="http://twitter.com/techxt" target="_blank"><img src="http://a0.twimg.com/a/1303316982/images/twitter_logo_header.png" /></a><br/><a href="http://facebook.com/techxt" target="_blank"><img src="https://secure-media-sf2p.facebook.com/ads3/creative/pressroom/jpg/b_1234209334_facebook_logo.jpg" height="38px" width="118px"/></a><p></p><b>Feeds and News</b><br /><?php ssharebar_get_feed() ?>
 <p></p>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_donations">
@@ -249,7 +251,7 @@ add_filter('the_content', 'disp_ssharebar',1);
 
 function ssharebar_get_feed() {
 	include_once(ABSPATH . WPINC . '/feed.php');
-	$rss = fetch_feed('http://feeds.feedburner.com/letusbuzz');
+	$rss = fetch_feed('http://feeds.feedburner.com/techxt');
 	if (!is_wp_error( $rss ) ){
 		$rss5 = $rss->get_item_quantity(5); 
 		$rss1 = $rss->get_items(0, $rss5); 
@@ -275,7 +277,7 @@ $eptitle=str_replace(array(">","<"),"",$ptitle);
 $twsc='';$flsc='';$gpsc='';$fssc='';
 $via=get_option('ssbar_twittervia','');
 
-$sharelinks.='<div class="scrollbarbox" id="scrollbarbox"><table width="60" cellspacing="1" border="0">';
+$sharelinks.='<div class="scrollbarbox" id="scrollbarbox"><table align="center" width="60" cellspacing="1" border="0">';
 
 if(get_option('ssbar_fblike',true)==true)
 $sharelinks.= '<tr><td align="center" ><div style="height:64px;width:48px;margin:0pt auto;" class="sharebarbtn sbarfblike"><iframe src="http://www.facebook.com/plugins/like.php?app_id=126788060742161&amp;href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=48&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=64" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:48px; height:64px;" allowTransparency="true"></iframe></div></td></tr>';
@@ -293,13 +295,16 @@ if(get_option('ssbar_stumble',false)==true)
 $sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarstumble"><script src="http://www.stumbleupon.com/hostedbadge.php?s=5&r='.$plink.'"></script></div></td></tr>';
 
 if(get_option('ssbar_fbshare',false)==true)
-$sharelinks.= '<tr><td align="center" ><div style="width: 60px; background: url(http://lh6.googleusercontent.com/-khBs3Dennc8/TiggtecoVQI/AAAAAAAAAPM/fiINPv9guK4/s60/fbshare.png) no-repeat scroll 0pt 3px transparent; position: relative; height: 68px;" class="sharebarbtn sbarfbshare"><div class="sbarifbshare" style="position: absolute; bottom: 0pt;"><a name="fb_share" type="box_count" share_url="'.$eplink.'" href="http://www.facebook.com/sharer.php"></a>'.$fssc.'</div></div></td></tr>';
+$sharelinks.= '<tr><td align="center" ><div style="position: relative; height: 60px;"><iframe src="//www.facebook.com/plugins/like.php?href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:45px; height:54px;" allowTransparency="true"></iframe>
+<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></td></tr>';
+
+
 
 if(get_option('ssbar_addthis',true)==true)
 $sharelinks.='<tr><td align="center" ><div class="addthis_toolbox addthis_default_style " style="width: 50px; padding-top: 5px;"><a class="addthis_counter"></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e3d994a059e1110"></script></div></td></tr>';
 
 if(get_option('ssbar_addcredit',true)==true)
-$sharelinks.='<tr><td align="center" ><small><a href="http://techxt.com/plugin-support-forum/" target="_blank" style="color:#888;">share</a></small></td></tr>';
+$sharelinks.='<tr><td align="center" ><small><a href="http://techxt.com/?" target="_blank" style="color:#888;">share</a></small></td></tr>';
 
 $sharelinks.= '</table></div>';
 return $sharelinks;
