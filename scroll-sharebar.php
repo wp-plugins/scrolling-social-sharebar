@@ -3,15 +3,15 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.5.1
+Version: 1.6
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
 
-
+$dispssbar = FALSE;
 
 function disp_ssharebar($content) {
-
+global $dispssbar;
 global $post;
 $plink = get_permalink($post->ID);
 $eplink = urlencode($plink);
@@ -38,10 +38,16 @@ if($expostcat!=''){
     		return $content;
 	}
 }
-
+if(is_home() && $dispssbar==FALSE && get_option('ssbar_dhome','checked')=='checked')
+{
+	$sharelinks=disp_ssharebar_func();
+	$content=$sharelinks.$content;
+	$dispssbar=TRUE;
+}
 if((is_single()&&get_option('ssbar_dpost','checked')=='checked')||(is_page()&&get_option('ssbar_dpage','checked')=='checked')){
 	$sharelinks=disp_ssharebar_func();
 	$content=$sharelinks.$content;
+	$dispssbar=TRUE;
 }
 
 return $content;
@@ -49,7 +55,7 @@ return $content;
 
 
 function ssharebar_css() {
-if(!is_single()&&!is_page())return;
+//if(!is_single()&&!is_page())return;
 $leftpad=get_option('ssbar_leftpadding','-80px');
 $toppad=get_option('ssbar_toppadding','20');
 $bottompad=get_option('ssbar_bottompadding','0');
@@ -178,6 +184,7 @@ function ssharebar_option()
 	<h3 style="color: #cc0000;">Where to Display</h3>
 	<p><input type="checkbox" name="ssbar_dpost" value="checked" <?php echo get_option('ssbar_dpost','checked'); ?> />Dispaly on Post</p>
 	<p><input type="checkbox" name="ssbar_dpage" value="checked" <?php echo get_option('ssbar_dpage','checked'); ?> />Dispaly on Page</p>
+	<p><input type="checkbox" name="ssbar_dhome" value="checked" <?php echo get_option('ssbar_dhome','checked'); ?> />Dispaly on HomePage</p>
 	
 	<h3 style="color: #cc0000;">Select Icons to display</h3>
 <p><input type="checkbox" name="ssbar_fblike" id="ssbar_fblike" value="true"<?php if (get_option( 'ssbar_fblike', true ) == true) echo ' checked'; ?>> Display Facebook Like</p>
@@ -219,7 +226,7 @@ function ssharebar_option()
 
 	
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit" />
+	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit,ssbar_dhome" />
 	<p class="submit">
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
@@ -248,6 +255,8 @@ function ssharebar_admin()
 add_action('admin_menu', 'ssharebar_admin');
 add_action('wp_head', 'ssharebar_css');
 add_filter('the_content', 'disp_ssharebar',1);
+add_filter('the_excerpt', 'disp_ssharebar',1);
+add_filter('get_the_excerpt', 'disp_ssharebar',1);
 
 function ssharebar_get_feed() {
 	include_once(ABSPATH . WPINC . '/feed.php');
@@ -270,9 +279,17 @@ function ssharebar_get_feed() {
 function disp_ssharebar_func()
 {
 global $post;
-$plink = get_permalink($post->ID);
+if(is_home()||is_archive())
+{
+	$plink=get_home_url();
+	$ptitle = get_bloginfo('name').' - '.get_bloginfo ( 'description' );
+}
+else
+{
+	$plink = get_permalink($post->ID);
+	$ptitle = get_the_title($post->ID);
+}
 $eplink = urlencode($plink);
-$ptitle = get_the_title($post->ID);
 $eptitle=str_replace(array(">","<"),"",$ptitle);
 $twsc='';$flsc='';$gpsc='';$fssc='';
 $via=get_option('ssbar_twittervia','');
@@ -296,15 +313,15 @@ $sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarstumble"><scr
 
 if(get_option('ssbar_fbshare',false)==true)
 $sharelinks.= '<tr><td align="center" ><div style="position: relative; height: 60px;width:45px;"><iframe src="//www.facebook.com/plugins/like.php?href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:45px; height:41px;" allowTransparency="true"></iframe>
-<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></td></tr>';
+<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=600,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></td></tr>';
 
 
 
 if(get_option('ssbar_addthis',true)==true)
-$sharelinks.='<tr><td align="center" ><div class="addthis_toolbox addthis_default_style " style="width: 50px; padding-top: 5px;"><a class="addthis_counter"></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e3d994a059e1110"></script></div></td></tr>';
+$sharelinks.='<tr><td align="center" ><div class="addthis_toolbox addthis_default_style " style="width: 50px; padding-top: 5px;"><a class="addthis_counter"></a><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4ed3df145c76db9e"></script></div></td></tr>';
 
 if(get_option('ssbar_addcredit',true)==true)
-$sharelinks.='<tr><td align="center" ><small><a href="http://techxt.com/?" target="_blank" style="color:#888;">share</a></small></td></tr>';
+$sharelinks.='<tr><td align="center" ><center><small><a href="http://techxt.com/?" target="_blank" style="color:#aaa;font: 10px arial;">share</a></small></center></td></tr>';
 
 $sharelinks.= '</table></div>';
 return $sharelinks;
