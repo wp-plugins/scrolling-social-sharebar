@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.6
+Version: 1.6.1
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -66,7 +66,8 @@ wp_print_scripts( 'jquery' );
    {
     	<?php if(trim(get_option('ssbar_barbackground','#fff'))!='')echo 'background:'.get_option('ssbar_barbackground','#fff').';'; ?>
 	<?php if(trim(get_option('ssbar_barborder','1px solid #000'))!='')echo 'border:'.get_option('ssbar_barborder','1px solid #000').';'; ?>
-	<?php if(trim(get_option('ssbar_leftpadding','-80px'))!='')echo 'margin-left:'.get_option('ssbar_leftpadding','-80px').';'; ?>
+	<?php if(trim(get_option('ssbar_leftpadding','-80px'))!=''&&!is_home())echo 'margin-left:'.get_option('ssbar_leftpadding','-80px').';'; ?>
+	<?php if(trim(get_option('ssbar_leftpaddinghm','-80px'))!=''&&is_home())echo 'margin-left:'.get_option('ssbar_leftpaddinghm','-80px').';'; ?>
 	<?php if(trim(get_option('ssbar_barshadow',''))!='')echo 'box-shadow:'.get_option('ssbar_barshadow','').';'; ?>
 	<?php if(trim(get_option('ssbar_barradius',''))!='')echo 'border-radius:'.get_option('ssbar_barradius','').';'; ?>
 	<?php if(trim(get_option('ssbar_barpadding','5px'))!='')echo 'padding:'.get_option('ssbar_barpadding','5px').';'; ?>
@@ -196,7 +197,8 @@ function ssharebar_option()
 <p><input type="checkbox" name="ssbar_addthis" id="ssbar_addthis" value="true"<?php if (get_option( 'ssbar_addthis', true ) == true) echo ' checked'; ?>> Display Addthis Button </p>
 <p><b>Default Thumbnail URL</b> <input type="text" name="ssbar_defthumb" style="width: 300px;" value="<?php echo get_option('ssbar_defthumb',''); ?>" /></p>
 <h3 style="color: #cc0000;">Margins (Positioning the Bar)</h3>
-	<p><b>Left Margin : </b><input style="width: 60px;" type="text" name="ssbar_leftpadding" value="<?php echo get_option('ssbar_leftpadding','-80px'); ?>" /> <b>Include px</b> at the end of the value<br />(Negative value will shift Icon Bar towards Left and Positive value will move it towards Right)</p>
+<p><b>Left Margin HomePage: </b><input style="width: 60px;" type="text" name="ssbar_leftpaddinghm" value="<?php echo get_option('ssbar_leftpaddinghm','-80px'); ?>" /> <b>Include px</b> at the end of the value<br />(Negative value will shift Icon Bar towards Left and Positive value will move it towards Right)</p>	
+<p><b>Left Margin Posts/Pages: </b><input style="width: 60px;" type="text" name="ssbar_leftpadding" value="<?php echo get_option('ssbar_leftpadding','-80px'); ?>" /> <b>Include px</b> at the end of the value<br />(Negative value will shift Icon Bar towards Left and Positive value will move it towards Right)</p>
 	<p><b>Top Margin : </b><input style="width: 60px;" type="text" name="ssbar_toppadding" value="<?php echo get_option('ssbar_toppadding','20'); ?>" /> <b>Do not Include px</b> at the end of the value<br />(Increasing the value will move the bar Down)</p>
 	<p><b>Bottom Margin : </b><input style="width: 60px;" type="text" name="ssbar_bottompadding" value="<?php echo get_option('ssbar_bottompadding','0'); ?>" /> <b>Do not Include px</b> at the end of the value<br />(The margin from bottom of the page where the bar will stop scrolling)</p>
 
@@ -226,8 +228,8 @@ function ssharebar_option()
 
 	
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit,ssbar_dhome" />
-	<p class="submit">
+	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit,ssbar_dhome,ssbar_leftpaddinghm" />
+	<p class="submit" style="position: fixed; background: none repeat scroll 0% 0% rgb(51, 51, 51); padding: 10px; bottom: 39px; border-radius: 10px 10px 10px 10px; margin-left: 550px;">
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
 	</form>
