@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.6.1
+Version: 1.6.5
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -55,7 +55,7 @@ return $content;
 
 
 function ssharebar_css() {
-//if(!is_single()&&!is_page())return;
+if (get_option('ssbar_mob', false)==true && ssharebar_check_mobile())return;
 $leftpad=get_option('ssbar_leftpadding','-80px');
 $toppad=get_option('ssbar_toppadding','20');
 $bottompad=get_option('ssbar_bottompadding','0');
@@ -87,6 +87,7 @@ wp_print_scripts( 'jquery' );
     div.sbpinned 
     {
     	position: fixed !important;
+		z-index: 9999;
    	top: <?php echo $toppad; ?>px;
     }
 </style>
@@ -194,6 +195,7 @@ function ssharebar_option()
 <p><input type="checkbox" name="ssbar_linkedin" id="ssbar_linkedin" value="true"<?php if (get_option( 'ssbar_linkedin', false ) == true) echo ' checked'; ?>> Display Linkedin </p>
 <p><input type="checkbox" name="ssbar_stumble" id="ssbar_stumble" value="true"<?php if (get_option( 'ssbar_stumble', false ) == true) echo ' checked'; ?>> Display Stumbleupon </p>
 <p><input type="checkbox" name="ssbar_fbshare" id="ssbar_fbshare" value="true"<?php if (get_option( 'ssbar_fbshare', false ) == true) echo ' checked'; ?>> Display Facebook Share </p>
+<p><input type="checkbox" name="ssbar_cbtn" id="ssbar_cbtn" value="true"<?php if (get_option( 'ssbar_cbtn', false ) == true) echo ' checked'; ?>> Display Custom Buttons </p>
 <p><input type="checkbox" name="ssbar_addthis" id="ssbar_addthis" value="true"<?php if (get_option( 'ssbar_addthis', true ) == true) echo ' checked'; ?>> Display Addthis Button </p>
 <p><b>Default Thumbnail URL</b> <input type="text" name="ssbar_defthumb" style="width: 300px;" value="<?php echo get_option('ssbar_defthumb',''); ?>" /></p>
 <h3 style="color: #cc0000;">Margins (Positioning the Bar)</h3>
@@ -205,6 +207,26 @@ function ssharebar_option()
 <h3 style="color: #cc0000;">Choose Animation</h3>
 <input type="radio" name="ssbar_atype" value="scroll" <?php if (get_option( 'ssbar_atype', 'scroll' ) == "scroll" ) echo ' checked'; ?>></input><label for="ssbar_atype">Animated&nbsp;&nbsp;&nbsp;&nbsp;</label>
 <input type="radio" name="ssbar_atype" value="fixed" <?php if (get_option( 'ssbar_atype', 'scroll' ) == "fixed" ) echo ' checked'; ?>></input><label for="ssbar_atype">Fixed</label>	
+
+<h3 style="color: #cc0000;">Add your own Custom Buttons</h3>
+<p>
+To add more than one custom button, separate the buttons codes with the word <b>[BUTTON]</b><br />
+e.g {code of first button} [BUTTON] {code of second button}
+</p>
+<p>
+Following <b>Tags</b> that will be replace by actual codes when the buttons are displayed<br/>
+<b>%%URL%%</b> - The URL of the Post/Page<br/>
+<b>%%EURL%%</b> - The HTML encoded URL of the Post/Page<br/>
+<b>%%TITLE%%</b> - The Title of the Post/Page<br/>
+<b>%%DESC%%</b> - Description or Post Excerpts<br/>
+<b>%%PIMAGE%%</b> - Link to the Featured Image of the post or the first image if featured image not set.<br/>
+
+</p>
+<textarea name="ssbar_cblarge" rows="10" cols="50" style="width:500px;"><?php echo stripslashes(htmlspecialchars(get_option('ssbar_cblarge',''))); ?></textarea>
+
+
+  <h3 style="color: #cc0000;">Mobile browsers</h3>
+<p><input type="checkbox" name="ssbar_mob" id="ssbar_mob" value="true"<?php if (get_option( 'ssbar_mob', false ) == true) echo ' checked'; ?>><b>Disable on Mobile Browser</b><br /> Check this option if you have installed a mobile theme plugin like Wptouch, WordPress Mobile Pack etc.</p>
 
 <h3 style="color: #cc0000;">Styling the Bar</h3>
 	<p><b>Background : </b><input style="width: 150px;" type="text" name="ssbar_barbackground" value="<?php echo get_option('ssbar_barbackground','#fff'); ?>" /> <b>Default : #fff</b></p>
@@ -228,7 +250,7 @@ function ssharebar_option()
 
 	
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit,ssbar_dhome,ssbar_leftpaddinghm" />
+	<input type="hidden" name="page_options" value="ssbar_mob,ssbar_leftpadding,ssbar_toppadding,ssbar_dpost,ssbar_dpage,ssbar_fblike,ssbar_twitter,ssbar_plusone,ssbar_linkedin,ssbar_stumble,ssbar_fbshare,ssbar_addthis,ssbar_barbackground,ssbar_barborder,ssbar_barpadding,ssbar_barshadow,ssbar_barradius,ssbar_defthumb,ssbar_atype,ssbar_bottompadding,ssbar_excludecat,ssbar_excludeid,ssbar_buttonpadding,ssbar_twittervia,ssbar_addog,ssbar_addcredit,ssbar_dhome,ssbar_leftpaddinghm,ssbar_cbtn,ssbar_cblarge" />
 	<p class="submit" style="position: fixed; background: none repeat scroll 0% 0% rgb(51, 51, 51); padding: 10px; bottom: 39px; border-radius: 10px 10px 10px 10px; margin-left: 550px;">
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
@@ -281,6 +303,7 @@ function ssharebar_get_feed() {
 function disp_ssharebar_func()
 {
 global $post;
+if (get_option('ssbar_mob', false )==true && ssharebar_check_mobile())return $content;
 if(is_home()||is_archive())
 {
 	$plink=get_home_url();
@@ -296,7 +319,7 @@ $eptitle=str_replace(array(">","<"),"",$ptitle);
 $twsc='';$flsc='';$gpsc='';$fssc='';
 $via=get_option('ssbar_twittervia','');
 
-$sharelinks.='<div class="scrollbarbox" id="scrollbarbox"><table align="center" width="60" cellspacing="1" border="0">';
+$sharelinks.='<div class="scrollbarbox" id="scrollbarbox"><table class="tssbar" align="center" width="60" cellspacing="1" border="0">';
 
 if(get_option('ssbar_fblike',true)==true)
 $sharelinks.= '<tr><td align="center" ><div style="height:64px;width:48px;margin:0pt auto;" class="sharebarbtn sbarfblike"><iframe src="http://www.facebook.com/plugins/like.php?app_id=126788060742161&amp;href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=48&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=64" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:48px; height:64px;" allowTransparency="true"></iframe></div></td></tr>';
@@ -314,13 +337,13 @@ if(get_option('ssbar_stumble',false)==true)
 $sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarstumble"><script src="http://www.stumbleupon.com/hostedbadge.php?s=5&r='.$plink.'"></script></div></td></tr>';
 
 if(get_option('ssbar_fbshare',false)==true)
-$sharelinks.= '<tr><td align="center" ><div style="position: relative; height: 60px;width:45px;"><iframe src="//www.facebook.com/plugins/like.php?href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:45px; height:41px;" allowTransparency="true"></iframe>
-<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=600,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></td></tr>';
+$sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarfbshare"><div style="position: relative; height: 60px;width:45px;"><iframe src="//www.facebook.com/plugins/like.php?href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:45px; height:41px;" allowTransparency="true"></iframe>
+<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=600,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></div></td></tr>';
 
-
+if (get_option( 'ssbar_cbtn', false ) == true)$sharelinks.=ssharebar_get_custom_button();
 
 if(get_option('ssbar_addthis',true)==true)
-$sharelinks.='<tr><td align="center" ><div class="addthis_toolbox addthis_default_style " style="width: 50px; padding-top: 5px;"><a class="addthis_counter"></a><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4ed3df145c76db9e"></script></div></td></tr>';
+$sharelinks.='<tr><td align="center" ><div class="sharebarbtn sbaraddthis"><div class="addthis_toolbox addthis_default_style " style="width: 50px; padding-top: 5px;"><a class="addthis_counter"></a><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4ed3df145c76db9e"></script></div></div></td></tr>';
 
 if(get_option('ssbar_addcredit',true)==true)
 $sharelinks.='<tr><td align="center" ><center><small><a href="http://techxt.com/?" target="_blank" style="color:#aaa;font: 10px arial;">share</a></small></center></td></tr>';
@@ -328,5 +351,102 @@ $sharelinks.='<tr><td align="center" ><center><small><a href="http://techxt.com/
 $sharelinks.= '</table></div>';
 return $sharelinks;
 }
+function ssharebar_get_custom_button()
+{
+	global $post;
+	$desc = "";
+	if(is_home()||is_archive())
+	{
+		$plink=get_home_url();
+		$ptitle = get_bloginfo('name');
+		$desc =get_bloginfo ( 'description' );
+	}
+	else
+	{
+		$plink = get_permalink($post->ID);
+		$ptitle = get_the_title($post->ID);
+		if (has_excerpt($post->ID)) {
+			$desc = esc_attr(strip_tags(get_the_excerpt($post->ID)));
+		}else{
+			$desc = esc_attr(str_replace("\r\n",' ',substr(strip_tags(strip_shortcodes($post->post_content)), 0, 160)));
+		}
+	}
+	$eplink = urlencode($plink);
+	$pimg = ssharebar_post_img_link();	
+	$cbtn=get_option('ssbar_cblarge','');
+	if(trim($cbtn==''))return '';
+	
+	$cbtn=str_replace("%%URL%%", $plink, $cbtn);
+	$cbtn=str_replace("%%EURL%%", $eplink, $cbtn);
+	$cbtn=str_replace("%%TITLE%%", $ptitle, $cbtn);
+	$cbtn=str_replace("%%PIMAGE%%", $pimg, $cbtn);
+	$cbtn=str_replace("%%DESC%%", $desc, $cbtn);
+		
+	$allbtns=explode("[BUTTON]",$cbtn);
+	$cnt=1;
+	$buttoncode='';
+	foreach($allbtns as $btn)
+	{
+		if(trim($btn==''))continue;
+		$buttoncode.='<tr><td align="center" ><div class="sharebarbtn sbarcbtn-'.$cnt.'">'.$btn.'</div></td></tr>';
+		$cnt=$cnt+1;
+	} 
+	return $buttoncode;
 
+} 
+function ssharebar_get_first_image() {
+global $post, $posts;
+$first_img = '';
+ob_start();
+ob_end_clean();
+$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+$first_img = $matches[1][0];
+return $first_img;
+}
+function ssharebar_post_img_link()
+{
+$thumb = false;
+$default_img = get_option('ssbar_defthumb',''); 
+if(is_home()||is_archive())return $default_img;
+if(function_exists('get_post_thumbnail_id')&&function_exists('wp_get_attachment_image_src'))
+{
+	$image_id = get_post_thumbnail_id();
+	$image_url = wp_get_attachment_image_src($image_id,'large');
+	$thumb = $image_url[0];
+}
+if($thumb=='')$thumb=ssharebar_get_first_image();
+if ( $thumb == false || $thumb=='') 
+	$thumb=$default_img; 
+return $thumb;
+}
+
+function ssharebar_check_mobile()
+{
+$ismob=false;
+switch(TRUE)
+{	
+	case (preg_match('/(iphone|ipod)/i', $_SERVER['HTTP_USER_AGENT']) && preg_match('/mobile/i', $_SERVER['HTTP_USER_AGENT'])):
+		$ismob="true";
+		break; 
+	case (preg_match('/ipad/i', $_SERVER['HTTP_USER_AGENT']) && preg_match('/mobile/i', $_SERVER['HTTP_USER_AGENT'])):
+		$ismob=false;
+		break;	
+	case (preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $_SERVER['HTTP_USER_AGENT'])):
+		$ismob=true;
+		break; 
+	case (((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'text/vnd.wap.wml') > 0) || (strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml')>0)) || ((isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])))):
+		$ismob=true;
+		break; 
+	case (in_array(strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,3)),array('lg '=>'lg ','lg-'=>'lg-','lg_'=>'lg_','lge'=>'lge'))):
+		$ismob=true;
+		break; 
+	case (in_array(strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,4)),array('acs-'=>'acs-','amoi'=>'amoi','doco'=>'doco','eric'=>'eric','huaw'=>'huaw','lct_'=>'lct_','leno'=>'leno','mobi'=>'mobi','mot-'=>'mot-','moto'=>'moto','nec-'=>'nec-','phil'=>'phil','sams'=>'sams','sch-'=>'sch-','shar'=>'shar','sie-'=>'sie-','wap_'=>'wap_','zte-'=>'zte-'))):
+		$ismob=true;
+		break;
+	case (preg_match('/Googlebot-Mobile/i', $_SERVER['HTTP_USER_AGENT']) || preg_match('/YahooSeeker\/M1A1-R2D2/i', $_SERVER['HTTP_USER_AGENT'])):
+		$ismob=true;
+		break;
+}
+return $ismob;
+}
 ?>
