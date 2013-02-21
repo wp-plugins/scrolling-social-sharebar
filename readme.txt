@@ -4,7 +4,7 @@ Donate link: http://techxt.com/donate
 Tags: Simple social share, social share, Facebook, Like, google, google +1, google plusone, twitter, tweet, facebook share, plusone, linkedin, stumbleupon
 Requires at least: 3.0
 Tested up to: 3.5.1
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 
 A scrolling social sharebar scrolling plugin with 7 social icons (Twitter, FB Like, Google +1, Linkedin, FB Share, Stumbleupon and Addthis) and option to add your own custom buttons. 
 

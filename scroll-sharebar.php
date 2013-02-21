@@ -3,16 +3,27 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.6.5
+Version: 1.6.6
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
 
 $dispssbar = FALSE;
+$mainloop =FALSE;
+function main_loop_test($query) {
+  global $wp_the_query;
+  global $mainloop;
+  if ($query === $wp_the_query) {
+    $mainloop=TRUE;
+  }else{ $mainloop=FALSE;}
+}
+add_action('loop_start', 'main_loop_test');
 
 function disp_ssharebar($content) {
 global $dispssbar;
 global $post;
+global $mainloop;
+if($mainloop==FALSE)return $content;
 $plink = get_permalink($post->ID);
 $eplink = urlencode($plink);
 $ptitle = get_the_title($post->ID);
@@ -61,6 +72,7 @@ $toppad=get_option('ssbar_toppadding','20');
 $bottompad=get_option('ssbar_bottompadding','0');
 wp_print_scripts( 'jquery' );
 ?>
+<!-- This site is powered by Scrolling Social Sharebar - http://techxt.com/scrolling-social-sharebar-plugin/ -->
 <style type="text/css">
    #scrollbarbox
    {
