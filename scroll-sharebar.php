@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.6.6
+Version: 1.7
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -94,6 +94,10 @@ wp_print_scripts( 'jquery' );
     	padding:0px !important;
     	margin:0px !important;
     }
+    .sharebarbtn
+    {
+    	line-height:1;
+    }
 <?php if(trim(get_option('ssbar_buttonpadding','0px'))!='')echo '.sharebarbtn{padding:'.get_option('ssbar_buttonpadding','5px').';}'; ?>    
 
     div.sbpinned 
@@ -107,7 +111,7 @@ wp_print_scripts( 'jquery' );
 <script type="text/javascript">
 (function($) {
 	$(function() {
-            var offset = $("#scrollbarbox").offset();
+            var offset = $("div#scrollbarbox").offset();
             var bottomPadding = <?php echo $bottompad; ?>;
             var topPadding = <?php echo $toppad; ?>;
             $(window).scroll(function() 
@@ -126,13 +130,15 @@ wp_print_scripts( 'jquery' );
 </script>
 <?php }else { ?>
 <script type="text/javascript">
+
 (function($) {
 	$(function() {
             var offset = $("#scrollbarbox").offset();
             var bottomPadding = <?php echo $bottompad; ?>;
+            var topPadding = <?php echo $toppad; ?>;
             $(window).scroll(function() {
 		
-                if ($(window).scrollTop() > offset.top && $(window).scrollTop()<$(document).height()-bottomPadding-$("#scrollbarbox").height()) 
+                if ($(window).scrollTop() > offset.top-topPadding && $(window).scrollTop()<$(document).height()-bottomPadding-$("#scrollbarbox").height()) 
                 {
 		    $("#scrollbarbox").addClass("sbpinned");
                 } else {
@@ -143,7 +149,7 @@ wp_print_scripts( 'jquery' );
 })(jQuery);
 </script>
 <?php } ?>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script><script type="text/javascript" src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script><script type="text/javascript" src="http://platform.linkedin.com/in.js"></script>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script><script type="text/javascript" src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script><script type="text/javascript" src="http://platform.linkedin.com/in.js"></script>
 
 <?php
 if(get_option('ssbar_addog', true )==true)ssharebar_fb_thumb();
@@ -267,7 +273,7 @@ Following <b>Tags</b> that will be replace by actual codes when the buttons are 
 		<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 	</p>
 	</form>
-</td><td width="2%">&nbsp;</td><td width="20%"><b>Follow us on</b><br/><a href="http://twitter.com/techxt" target="_blank"><img src="http://a0.twimg.com/a/1303316982/images/twitter_logo_header.png" /></a><br/><a href="http://facebook.com/techxt" target="_blank"><img src="https://secure-media-sf2p.facebook.com/ads3/creative/pressroom/jpg/b_1234209334_facebook_logo.jpg" height="38px" width="118px"/></a><p></p><b>Feeds and News</b><br /><?php ssharebar_get_feed() ?>
+</td><td width="2%">&nbsp;</td><td width="20%"><a href="http://techxt.com/sharebar_ad" target="_blank"><img src="http://techxt.com/sharebar_ad.png" /></a><br/><b>Follow us on</b><br/><a href="http://twitter.com/techxt" target="_blank"><img src="http://a0.twimg.com/a/1303316982/images/twitter_logo_header.png" /></a><br/><a href="http://facebook.com/techxt" target="_blank"><img src="https://secure-media-sf2p.facebook.com/ads3/creative/pressroom/jpg/b_1234209334_facebook_logo.jpg" height="38px" width="118px"/></a><p></p><b>Feeds and News</b><br /><?php ssharebar_get_feed() ?>
 <p></p>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_donations">
@@ -349,8 +355,7 @@ if(get_option('ssbar_stumble',false)==true)
 $sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarstumble"><script src="http://www.stumbleupon.com/hostedbadge.php?s=5&r='.$plink.'"></script></div></td></tr>';
 
 if(get_option('ssbar_fbshare',false)==true)
-$sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarfbshare"><div style="position: relative; height: 60px;width:45px;"><iframe src="//www.facebook.com/plugins/like.php?href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:45px; height:41px;" allowTransparency="true"></iframe>
-<div style="background: url(&quot;http://lh3.googleusercontent.com/-TuITveepO2g/UOvRrWHqsaI/AAAAAAAAAnw/VrVfnRoLfio/s45/fbshare.jpg&quot;) repeat scroll 0px 0px transparent; width: 45px; height: 18px; position: absolute; bottom: 1px; cursor: pointer;"  onclick="window.open(&#39;https://www.facebook.com/sharer/sharer.php?u='.$eplink.'&#39;,&#39;popUpWindow&#39;,&#39;height=500,width=600,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no, status=yes&#39;);"></div></div></div></td></tr>';
+$sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbarfbshare"><div class="fb-share-button" data-href="'.$plink.'" data-width="450" data-type="box_count"></div></div></td></tr>';
 
 if (get_option( 'ssbar_cbtn', false ) == true)$sharelinks.=ssharebar_get_custom_button();
 
