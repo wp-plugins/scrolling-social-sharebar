@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.7
+Version: 1.7.1
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -52,12 +52,12 @@ if($expostcat!=''){
 if(is_home() && $dispssbar==FALSE && get_option('ssbar_dhome','checked')=='checked')
 {
 	$sharelinks=disp_ssharebar_func();
-	$content=$sharelinks.$content;
+	$content='<div id="ssbartop"></div>'.$sharelinks.$content;
 	$dispssbar=TRUE;
 }
 if((is_single()&&get_option('ssbar_dpost','checked')=='checked')||(is_page()&&get_option('ssbar_dpage','checked')=='checked')){
 	$sharelinks=disp_ssharebar_func();
-	$content=$sharelinks.$content;
+	$content='<div id="ssbartop"></div>'.$sharelinks.$content;
 	$dispssbar=TRUE;
 }
 
@@ -103,7 +103,7 @@ wp_print_scripts( 'jquery' );
     div.sbpinned 
     {
     	position: fixed !important;
-		z-index: 9999;
+	z-index: 9999;
    	top: <?php echo $toppad; ?>px;
     }
 </style>
@@ -130,14 +130,17 @@ wp_print_scripts( 'jquery' );
 </script>
 <?php }else { ?>
 <script type="text/javascript">
-
 (function($) {
 	$(function() {
-            var offset = $("#scrollbarbox").offset();
+            var offset = $("#ssbartop").offset();
             var bottomPadding = <?php echo $bottompad; ?>;
             var topPadding = <?php echo $toppad; ?>;
+            $(window).resize(function() {
+            	offset = $("#ssbartop").offset();
+            	if(offset.top<topPadding)$("#scrollbarbox").addClass("sbpinned");
+            });
             $(window).scroll(function() {
-		
+		offset = $("#ssbartop").offset();
                 if ($(window).scrollTop() > offset.top-topPadding && $(window).scrollTop()<$(document).height()-bottomPadding-$("#scrollbarbox").height()) 
                 {
 		    $("#scrollbarbox").addClass("sbpinned");
