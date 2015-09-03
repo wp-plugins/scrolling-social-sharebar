@@ -3,7 +3,7 @@
 Plugin Name: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
 Plugin URI: http://techxt.com/scrolling-social-sharebar-plugin/
 Description: Scrolling Social Sharebar (Twitter Like Google +1 Linkedin and Stumbleupon)
-Version: 1.7.1
+Version: 1.7.2
 Author: Sudipto Pratap Mahato
 Author URI: http://techxt.com
 */
@@ -343,7 +343,7 @@ $via=get_option('ssbar_twittervia','');
 $sharelinks.='<div class="scrollbarbox" id="scrollbarbox"><table class="tssbar" align="center" width="60" cellspacing="1" border="0">';
 
 if(get_option('ssbar_fblike',true)==true)
-$sharelinks.= '<tr><td align="center" ><div style="height:64px;width:48px;margin:0pt auto;" class="sharebarbtn sbarfblike"><iframe src="http://www.facebook.com/plugins/like.php?app_id=126788060742161&amp;href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=48&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=64" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:48px; height:64px;" allowTransparency="true"></iframe></div></td></tr>';
+$sharelinks.= '<tr><td align="center" ><div style="height:64px;width:50px;margin:0pt auto;" class="sharebarbtn sbarfblike"><iframe src="http://www.facebook.com/plugins/like.php?app_id=126788060742161&amp;href='.$eplink.'&amp;send=false&amp;layout=box_count&amp;width=50&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=64" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:50px; height:64px;" allowTransparency="true"></iframe></div></td></tr>';
 
 if (get_option( 'ssbar_twitter',true ) == true)
 $sharelinks.= '<tr><td align="center" ><div class="sharebarbtn sbartwitter"><a href="http://twitter.com/share" data-url="'.$plink.'" data-counturl="'.$plink.'" data-text="'.$eptitle.'" class="twitter-share-button" data-count="vertical" data-via="'.$via.'"></a>'.$twsc.'</div></td></tr>';
